@@ -25,7 +25,7 @@ export function floydWarshall(graph) {
     }
   
     return { dist, next };
-  }
+}
   
   
   
