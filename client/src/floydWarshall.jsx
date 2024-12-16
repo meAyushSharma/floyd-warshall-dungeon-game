@@ -26,6 +26,8 @@ export function floydWarshall(graph) {
   
     return { dist, next };
 }
+
+
   
   
   
@@ -42,3 +44,39 @@ export function getOptimalRoute(start, end, next) {
     route.push(end);
     return route;
   }
+
+  function getAllPaths(start, end, next, currentPath = [], visited = new Set()) {
+    if (next[start][end] === null || visited.has(start)) return [];
+    if (start === end) return [[...currentPath, start]];
+    
+    const paths = [];
+    const intermediate = next[start][end];
+    
+    // Mark the current node as visited
+    visited.add(start);
+
+    currentPath.push(start);
+    const subPaths = getAllPaths(intermediate, end, next, [...currentPath], visited);
+    subPaths.forEach(subPath => paths.push(subPath));
+
+    // Unmark the current node after the recursion
+    visited.delete(start);
+
+    return paths;
+  }
+  
+  
+
+// Generate all paths with their distances
+export function getPathsWithDistances(start, end, dist, next) {
+  const paths = getAllPaths(start, end, next);
+  return paths.map(path => {
+    let totalDistance = 0;
+    for (let i = 0; i < path.length - 1; i++) {
+      totalDistance += dist[path[i]][path[i + 1]];
+    }
+    return { path, distance: totalDistance };
+  });
+}
+
+  
